@@ -1,0 +1,40 @@
+<?php  
+include "connect.php";
+ 
+//mencari banyak data yang ada dalam tabel  
+$sqlCount = "select count(nis) from data_siswa";  
+$rsCount = mysql_fetch_array(mysql_query($sqlCount));  
+$banyakData = $rsCount[0];  
+$page = isset($_GET['page']) ? $_GET['page'] : 1;  
+$limit = 10;  
+$mulai_dari = $limit * ($page - 1);  
+$sql_limit = "select * from data_siswa order by nama limit $mulai_dari, $limit";  
+$hasil = mysql_query($sql_limit);  
+//menampilkan data  
+echo '<table border="1">  
+ <tr>  
+ <td>NIS</td>  
+ <td>Nama</td>  
+ <td>Kelas</td>  
+ <td>Alamat</td>  
+ </tr>';  
+while($dataSiswa = mysql_fetch_array($hasil)){  
+ echo '<tr>';  
+ echo '<td>'.$dataSiswa['nis'].'</td>';  
+ echo '<td>'.$dataSiswa['nama'].'</td>';  
+ echo '<td>'.$dataSiswa['kelas'].'</td>';  
+ echo '<td>'.$dataSiswa['alamat'].'</td>';  
+ echo '</tr>';  
+}  
+echo '</table>';  
+//membuat pagination  
+$banyakHalaman = ceil($banyakData / $limit);  
+echo 'Halaman: ';  
+for($i = 1; $i <= $banyakHalaman; $i++){  
+ if($page != $i){  
+ echo '[<a href="tampil-data-siswa.php?page='.$i.'">'.$i.'</a>] ';  
+ }else{  
+ echo "[$i] ";  
+ }  
+}  
+?>  
